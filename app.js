@@ -2,6 +2,7 @@ const express = require('express');
 const toursRouter = require('./routes/tourRoutes');
 const usersRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
+const viewRouter = require('./routes/viewRoutes');
 const gobalErrorHandler = require('./controllers/errorController');
 const AppError = require('./utils/appError');
 const { rateLimit } = require('express-rate-limit');
@@ -9,8 +10,28 @@ const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
+const path = require('path');
+const morgan = require('morgan');
+
 
 const app = express();
+
+//settup view engine
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+
+//global middleware to serve static files. 
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+//http headers with helmet
+app.use(helmet());
+
+if(process.env.NODE_ENV === 'development'){
+    app.use(morgan('dev'));
+}
+
+
 const limiter = rateLimit({
     max:100,
     windowMs: 60*60*1000,
@@ -22,8 +43,7 @@ const limiter = rateLimit({
 app.use('/api',limiter);
 // req data limit
 app.use(express.json({limit: '10kb'}));
-//http headers with helmet
-app.use(helmet());
+
 //test middleware
 app.use((req,res,next)=>{
     req.time = new Date().toISOString();
@@ -46,6 +66,8 @@ app.use(hpp({
     ]
 }));
 
+// rendering basee template in root route.
+app.use('/', viewRouter);
 //specific middleware
 app.use('/api/v1/tours/', toursRouter);
 app.use('/api/v1/users/', usersRouter);

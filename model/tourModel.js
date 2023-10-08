@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 require('dotenv').config({path:`${__dirname}/../config.env`});
+const slugify = require('slugify');
 
 const DB = process.env.DB_HOST.replace('<password>',process.env.DB_PASSWORD);
 
@@ -15,6 +16,7 @@ const tourSchema = new mongoose.Schema({
         unique:true,
        
     },
+    slug: String,
     ratingsAverage: {
         type: Number,
         max: [5,'Max value should be below 5'],
@@ -93,6 +95,10 @@ tourSchema.virtual('durationWeeks').get(function(){
     return this.duration/ 7;
 });
 
+//added virtual slug field. deprecated due to actual field dispplayed and persisted.
+// tourSchema.virtual('slug').get(function(){
+//     return slugify(this.name).toLowerCase();
+// })
 //// Virtual Populate.. to avoid child referencing of the reviews! 
 tourSchema.virtual('reviews',{
     ref: 'Review',
@@ -114,10 +120,10 @@ tourSchema.virtual('reviews',{
 
 
 /////// PRE SAVE //////
-// tourSchema.pre('save', function(){
-//     this.start = Date.now()
-//     console.log(this);
-// })
+tourSchema.pre('save', function(next){
+    this.slug = slugify(this.name,{lower:true})
+    next();
+})
 
 /////// POST SAVE //////
 // tourSchema.post('save',function(doc,next){
@@ -140,7 +146,17 @@ tourSchema.pre(/^find/,function(next){
     //populate every find method with the references
     this.populate({
         path:'guides',
-        select: 'name email'});
+        select: 'name email role photo'});
+    next();
+})
+
+//populate review fields. 
+
+tourSchema.pre(/^find/,function(next){
+    this.populate({
+        path:'reviews',
+        select:'review rating user'
+    })
     next();
 })
 
@@ -151,6 +167,7 @@ tourSchema.pre(/^find/,function(next){
 
 tourSchema.index({ price: 1, ratingsAverage: -1});
 tourSchema.index({ startLocation:'2dsphere'});
+tourSchema.index({ slug: 1})
 
 const Tour = mongoose.model('Tour',tourSchema);
 

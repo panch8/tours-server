@@ -14,5 +14,5 @@ app.listen(process.env.PORT,()=>{
 process.on('unhandledRejection', err =>{
     console.error(err.name, err.message);
     console.log('Uncaght Rejection, Shut down.');
-    process.exit(1)
+    // process.exit(1)
 });
