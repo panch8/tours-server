@@ -35,13 +35,21 @@ exports.protect = catchAsync(async(req,res,next)=>{
   let token;
 
   //////BEARER TOKEN AUTHORIZATIOON LOGIC
-  // if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
-  //   token = req.headers.authorization.split(' ')[1];
-  // }
+  if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
+    token = req.headers.authorization.split(' ')[1];
+  }
+  if(!token){
+    //////// cookie AUTHORIZATION LOGIC
+    if(req.headers.cookie && req.headers.cookie.startsWith('jwt')){
+      token = req.headers.cookie.split('=')[1];
+    }
+  }
 
-  //////// cookie AUTHORIZATION LOGIC
- if(req.headers.cookie && req.headers.cookie.startsWith('jwt')){
-    token = req.headers.cookie.split('=')[1];
+  //check cookies with cookie parser.
+  if(!token){
+    if(req.cookies.jwt){
+      token = req.cookies.jwt;
+    }
   }
 
   if(!token){
@@ -63,6 +71,46 @@ exports.protect = catchAsync(async(req,res,next)=>{
  req.user = currentUser;
   next()
 });
+
+exports.isLoggedIn = async(req,res,next)=>{
+  //check if token exist only in cookies. OINLY FOR RENDER VIEWS
+  let token;
+//////// cookie AUTHORIZATION LOGIC
+  if(req.headers.cookie && req.headers.cookie.startsWith('jwt')){
+      token = req.headers.cookie.split('=')[1];
+    }
+  //check cookies with cookie parser.
+  if(!token){
+    if(req.cookies && req.cookies.jwt){
+      token = req.cookies.jwt;
+    }
+  }
+
+  if(!token){
+    return next();
+  }
+  try {
+      //verify token integrity
+    const payload = jwt.verify(token,process.env.JWT_SECRET);
+
+    //check if user still exist
+    const currentUser = await User.findById(payload.id);
+    if(!currentUser){
+    return next();
+    }
+
+      // check if password hasn't been changed since token was signed
+    if(await currentUser.changePasswordAfter(payload.iat)){
+      return next();
+    }
+    res.locals.user = currentUser;
+      next()
+  } catch (error) {
+    next()
+  }
+  
+};
+
 
 exports.restrict = (...roles)=>{
   return (req,res,next)=>{
@@ -103,6 +151,21 @@ exports.logIn = catchAsync(async (req,res,next)=>{
     createSendToken(user,200,res);  
   }
 });
+
+exports.logOut = (req,res)=>{
+ 
+  const cookieOpt = {
+    expires: new Date(Date.now()+ 6000), 
+    httpOnly: true
+  };
+ 
+
+  res.cookie('jwt','LoggedOut',cookieOpt);
+  res.status(200).json({
+    status: 'success'
+  })
+
+};
 
 exports.forgotPass = catchAsync(async(req,res,next) =>{
     const email = req.body.email;

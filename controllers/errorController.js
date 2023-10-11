@@ -22,33 +22,66 @@ const handleJWTError = () => new AppError('Error with credentials, please Login'
 
 const handleJWTExpiredError = () => new AppError('Token expired, please log in again', 401);
 
-const sendErrorDev = (err, res)=>{
-    res.status(err.statusCode).json({
-        status: err.status,
-        message: err.message,
-        error: err,
-        stack: err.stack
+const sendErrorDev = (err,req, res)=>{
+    //for API requests
+    if(req.originalUrl.startsWith('/api')){
+        return res.status(err.statusCode).json({
+            status: err.status,
+            message: err.message,
+            error: err,
+            stack: err.stack
+        })
+        
+    }
+
+    // for rendered view requests. 
+    console.error(err);
+    return res.status(err.statusCode).render('error',{
+        title: 'Something went wrong',
+        msg: err.message
     })
+
 };
 
-const sendErrorProd = (err, res)=>{
-    // isOperational, trusted error send it to client
-    if(err.isOperational){
-     res.status(err.statusCode).json({
-     status: err.status,
-     message: err.message
-     })
-
-    }else { 
-        //// unexpected error dont want to leak info to client. 
-        // log error to console
-        console.error('ERROR', err);
-        // send generic message
-        res.status(500).json({
-            status: 'error',
-            message: " something went very wrong!"
+const sendErrorProd = (err, req, res)=>{
+    if(req.originalUrl.startsWith('/api')){
+        // isOperational, trusted error send it to client
+        if(err.isOperational){
+        res.status(err.statusCode).json({
+        status: err.status,
+        message: err.message
         })
-    }
+
+        }else { 
+            //// unexpected error dont want to leak info to client. 
+            // log error to console
+            console.error('ERROR', err);
+            // send generic message
+            res.status(500).json({
+                status: 'error',
+                message: "something went very wrong!"
+            })
+        }
+        return
+}else{
+    //rendered views response
+    if(err.isOperational){
+        res.status(err.statusCode).render('error',{
+        title: 'Something went wrong',
+        msg: err.message
+        })
+
+        }else { 
+            //// unexpected error dont want to leak info to client. 
+            // log error to console
+            console.error('ERROR', err);
+            // send generic message
+            res.status(500).render('error',{
+                title: 'something went very wrong!',
+                msg: " Please try again or contact support"
+            })
+        }
+}
 };
 
 
@@ -57,9 +90,11 @@ module.exports = (err,req,res,next) => {
     err.status = err.status || "error";
 
     if(process.env.NODE_ENV === 'development'){
-        sendErrorDev(err,res);
+        sendErrorDev(err,req,res);
     }else if(process.env.NODE_ENV === 'production'){
         let error = {...err};
+        error.message = err.message;
+        
         if(err.name === 'CastError'){
            error = handleCastErrorDB(error);
         }
@@ -71,7 +106,7 @@ module.exports = (err,req,res,next) => {
         }
         if(err.name === 'JsonWebTokenError') error = handleJWTError();
         if(err.name === 'TokenExpiredError') error = handleJWTExpiredError();
-        sendErrorProd(error, res);
+        sendErrorProd(error, req, res);
     }
 
     
