@@ -2,6 +2,7 @@
 
 export const displayMap = function(locations){
 
+//add access token directly here to work . 
 
 mapboxgl.accessToken = process.env.MAPBOX_ACCESS_TOKEN;
 

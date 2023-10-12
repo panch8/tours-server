@@ -47,14 +47,18 @@ exports.protect = catchAsync(async(req,res,next)=>{
 
   //check cookies with cookie parser.
   if(!token){
-    if(req.cookies.jwt){
+    if(req.cookies && req.cookies.jwt){
       token = req.cookies.jwt;
     }
   }
 
   if(!token){
-    return next(new AppError('Authorization token not found', 400))
+    return next(new AppError('Authorization token not found, Please login.', 400))
   }
+
+  if(token === 'LoggedOut'){
+    return next(new AppError('Please login.', 403))
+  };
   //verify token integrity
   const payload = jwt.verify(token,process.env.JWT_SECRET);
 
@@ -69,6 +73,7 @@ exports.protect = catchAsync(async(req,res,next)=>{
   return next(new AppError('Password has been changed please login again',401))
  }
  req.user = currentUser;
+ res.locals.user = currentUser;
   next()
 });
 

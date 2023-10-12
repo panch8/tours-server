@@ -1,4 +1,6 @@
 const Tour = require('../model/tourModel');
+const User = require('../model/userModel');
+
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 
@@ -35,3 +37,35 @@ exports.getLoginForm = (req,res)=>{
   });
 };
 
+exports.getAccount = catchAsync( async(req,res,next)=>{
+  const user =await User.findOne(req.user._id);
+
+  
+  if(!user){
+    return next(new AppError('Requested user not found', 404));
+  }
+
+  res.status(200).render('account',{
+    title: `${user.name}`,
+    user
+  })
+});
+
+///server side exmple of updating data... DEPRECATED
+// exports.submitUserData = catchAsync(async(req,res,next)=>{
+//   console.log(req.user);
+//   const updatedUser = await User.findByIdAndUpdate(req.user._id,{
+//     name:req.body.name,
+//     email:req.body.email
+//     },{ 
+//     new: true,
+//     runValidators: true
+//   })
+//   if(updatedUser){
+//     res.status(200).render('account',{
+//       title: updatedUser.name,
+//       user: updatedUser
+//     })
+//   }else{
+//     return next(new AppError('Something went wrong pease try again.',400))}
+// });

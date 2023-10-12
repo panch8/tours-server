@@ -58,6 +58,10 @@ const limiter = rateLimit({
 app.use('/api',limiter);
 // req data limit
 app.use(express.json({limit: '10kb'}));
+app.use(express.urlencoded({
+    limit:'10kb',
+    extended: true
+}))
 
 //test middleware
 app.use((req,res,next)=>{

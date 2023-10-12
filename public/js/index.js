@@ -1,11 +1,15 @@
 import '@babel/polyfill';
 import { logOut, login } from "./login";
 import { displayMap } from './mapbox';
+import { updateSettings } from './updateSettings';
 console.log('hello from parcel');
 
 const mapDiv = document.getElementById('map');
-const loginForm = document.querySelector('.form');
+const loginForm = document.querySelector('.form--login');
 const logOutBtn = document.querySelector('.nav__el--logout');
+const updateDataForm = document.querySelector('.form-user-data');
+const updatePasswordForm = document.querySelector('.form-user-settings');
+
 
 if(mapDiv){
   const locations = JSON.parse(mapDiv.dataset.locations)
@@ -23,4 +27,42 @@ if(loginForm){
 
 if(logOutBtn)logOutBtn.addEventListener('click',logOut);
 
+if(updateDataForm){
+  updateDataForm.addEventListener('submit',async function(e){
+    e.preventDefault();
+    const form = new FormData;
+    console.log(document.getElementById('upload-photo').files);
+    form.append('name',document.getElementById('name').value);
+    form.append('email',document.getElementById('email').value);
+    form.append('photo',document.getElementById('upload-photo').files[0]);
+    // const name = document.getElementById('name').value;
+    // const email = document.getElementById('email').value;
+
+    await updateSettings(form);
+    location.reload();
+
+  })
+}
+
+if(updatePasswordForm){
+  updatePasswordForm.addEventListener('submit',async function(e){
+    e.preventDefault();
+    document.querySelector('.btn--save-pass').textContent = 'Updating...'
+    const currentPassword = document.getElementById('password-current').value;
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('password-confirm').value;
+    
+    const data = {
+      password: currentPassword,
+      newPassword: password,
+      newPasswordConfirm: confirmPassword
+    }
+
+    await updateSettings(data,'password');
+    document.querySelector('.btn--save-pass').textContent = 'Save Password';
+    document.getElementById('password-current').value = '';
+    document.getElementById('password').value = '';
+    document.getElementById('password-confirm').value = '';
+  })
+}
 
