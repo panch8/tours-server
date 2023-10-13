@@ -4,8 +4,9 @@ const User = require('./../model/userModel');
 const catchAsync = require('./../utils/catchAsync');
 const jwt  = require('jsonwebtoken');
 const AppError = require('../utils/appError');
-const sendEmail = require('../utils/email');
+// const sendEmail = require('../utils/email');
 const crypto = require('crypto');
+const Email = require('../utils/email');
 
 
 
@@ -133,6 +134,9 @@ exports.signUp = catchAsync(async (req,res,next)=>{
         password: req.body.password,
         passwordConfirm: req.body.passwordConfirm
     });
+    const url = `${req.protocol}://${req.get('host')}/me`;
+
+    await new Email(newUser,url).sendWelcome();
 
     createSendToken(newUser,201,res);
      
