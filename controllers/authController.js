@@ -186,19 +186,15 @@ exports.forgotPass = catchAsync(async(req,res,next) =>{
     await currentUser.save({validateBeforeSave: false});
 
     //email reset token to user. 
-    const resetURL = `${req.protocol}://${req.get('host')}/${req.baseUrl}/reset-password/${resetToken}`;
+    // const resetURL = `${req.protocol}://${req.get('host')}/${req.baseUrl}/reset-password/${resetToken}`;
 
-    const mail = {
-      email,
-      subject: "Your Natours Reset Password Action",
-      message: `Dear costumer, we've received your request to reset your password, This is the reset URl please send your nww password among this URL ${resetURL}`
-    };
+    const clientResetURL = `${req.protocol}://${req.get('host')}/submit-new-password/${resetToken}`;
 
     try {
-      await sendEmail(mail);
+      await new Email(currentUser,clientResetURL).sendResetPass();
       res.status(200).json({
-        status:"success"
-        
+        status:"success",
+        message: "token sent to email"
       })
       
     } catch (error) {

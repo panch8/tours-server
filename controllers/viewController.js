@@ -51,6 +51,16 @@ exports.getAccount = catchAsync( async(req,res,next)=>{
   })
 });
 
+exports.getSubmitNewPassForm = (req,res,next)=>{
+  const token = req.params.resetToken
+  // const resetURL = `${req.protocol}://${req.get('host')}/${req.baseUrl}/reset-password/${resetToken}`;
+  res.status(200).render('submitNewPass',{
+    title: "Submit New Password",
+    token
+  })
+};
+
+
 ///server side exmple of updating data... DEPRECATED
 // exports.submitUserData = catchAsync(async(req,res,next)=>{
 //   console.log(req.user);

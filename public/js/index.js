@@ -1,5 +1,5 @@
 import '@babel/polyfill';
-import { logOut, login } from "./login";
+import { logOut, login, submitNewPass } from "./login";
 import { displayMap } from './mapbox';
 import { updateSettings } from './updateSettings';
 console.log('hello from parcel');
@@ -9,7 +9,7 @@ const loginForm = document.querySelector('.form--login');
 const logOutBtn = document.querySelector('.nav__el--logout');
 const updateDataForm = document.querySelector('.form-user-data');
 const updatePasswordForm = document.querySelector('.form-user-settings');
-
+const submitNewPassForm = document.querySelector('.form--submit-pass')
 
 if(mapDiv){
   const locations = JSON.parse(mapDiv.dataset.locations)
@@ -66,3 +66,12 @@ if(updatePasswordForm){
   })
 }
 
+if(submitNewPassForm){
+  submitNewPassForm.addEventListener('submit',async function(e){
+    e.preventDefault();
+    const password = document.getElementById('password').value;
+    const token = document.getElementById('password').dataset.token;
+    const confirmPassword = document.getElementById('password-confirm').value;
+    await submitNewPass(token,password,confirmPassword)
+  })
+}

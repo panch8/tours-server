@@ -41,3 +41,24 @@ export const logOut = async function(){
   }
 
 }
+
+export const submitNewPass = async function(token,password,passwordConfirm){
+  try {
+
+    const res =await axios({
+      method:'PATCH',
+      url:`http://127.0.0.1:3000/api/v1/users/reset-password/${token}`,
+      data:{
+        password,
+        passwordConfirm
+      }
+    })
+
+    if(res.data.status === 'success'){
+      showAlert('success','Password Reset Success');
+      location.assign('/me');}
+  } catch (error) {
+    showAlert('error', 'Error reseting password. Try again.')
+
+  }
+}

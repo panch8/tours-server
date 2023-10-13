@@ -1,0 +1,17 @@
+extends baseEmail 
+
+block content   
+  p Hi #{name},
+  p You have requested a Password RESET 🔐
+  p Here is the Link to complete your request. You'll be redirected to a "/submit-new-password/:token" url and prompted to submit a new one.
+  table.btn.btn-primary(role='presentation', border='0', cellpadding='0', cellspacing='0')
+    tbody
+      tr
+        td(align='left')
+          table(role='presentation', border='0', cellpadding='0', cellspacing='0')
+            tbody
+              tr
+                td
+                  a(href=`${url}`, target='_blank') Submit new password here 
+  p If you don't recognice this activity, please contact me!
+  p - Fran Codino, CEO

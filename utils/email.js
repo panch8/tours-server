@@ -48,6 +48,10 @@ module.exports = class Email{
     async sendWelcome(){
        await this.send('welcome',`Hello ${this.firstName} welcome to our family`)
     }
+
+    async sendResetPass(){
+        await this.send('reset-pass',`Hello ${this.firstName}. Tours Reset Password Action valid for 10 minutes`)
+    }
 };
 
 // const sendEmail = async(options)=>{
