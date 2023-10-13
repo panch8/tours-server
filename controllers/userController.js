@@ -47,8 +47,12 @@ const upload = multer({
     fileFilter: multerFilter
     });
 
+
+    //multer middleware
 exports.uploadFile = upload.single('photo');
 
+
+//sharp middleware
 exports.reSizeConfigFile = (req,res,next)=>{
     if(!req.file)return next();
     req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`

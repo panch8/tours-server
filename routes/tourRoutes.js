@@ -36,7 +36,9 @@ router.route('/')
 router.route('/:id')
 .get(tourControllers.getTour)
 .patch(authController.protect,  
-       authController.restrict('admin','lead-guide'), 
+       authController.restrict('admin','lead-guide'),
+       tourControllers.uploadFiles,
+       tourControllers.resizeAndConfigPhotos, 
        tourControllers.updateTour)
 .delete(
     authController.protect, 

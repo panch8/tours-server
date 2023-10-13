@@ -12,7 +12,7 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 const path = require('path');
 const morgan = require('morgan');
-
+const cookieParser = require('cookie-parser');
 
 const app = express();
 
@@ -61,7 +61,8 @@ app.use(express.json({limit: '10kb'}));
 app.use(express.urlencoded({
     limit:'10kb',
     extended: true
-}))
+}));
+app.use(cookieParser());
 
 //test middleware
 app.use((req,res,next)=>{

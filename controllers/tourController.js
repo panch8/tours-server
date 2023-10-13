@@ -6,6 +6,9 @@ const AppError = require('../utils/appError');
 // const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 const factory = require('./handlerFactory');
+const multer = require('multer');
+const sharp = require('sharp');
+
 
 //HANDLERS//
 
@@ -153,8 +156,62 @@ exports.monthlyPlan = catchAsync(async (req,res, next)=>{
     })
  });
 
+/// update many photos. 
+//not directly stored to disk because resize needed. 
+const multerStorage = multer.memoryStorage();
 
+const multerFilter = (req,file,cb) =>{
+    if(file.mimetype.startsWith('image')){
+        cb(null,true)
+    }else{
+        cb(new AppError('Uploaded files must be Photos', 403));
+    }
+};
+const upload = multer({
+    storage: multerStorage, 
+    fileFilter: multerFilter
+});
 
+exports.uploadFiles = upload.fields([
+    {
+        name: "imageCover",
+        maxCount: 1
+    },
+    {
+        name: "images",
+        maxCount: 3
+    }
+]);
+
+exports.resizeAndConfigPhotos = catchAsync(async(req,res,next)=>{
+    if(!req.files.imageCover && !req.files.images)return next();
+    //for writting in database
+    req.body.imageCover = `tour-${req.params.id}-cover.jpeg`;
+    req.body.images = [];
+
+    if(req.files.imageCover){
+      await sharp(req.files.imageCover[0].buffer)
+        .resize(2000,1333)
+        .toFormat('jpeg')
+        .jpeg({quality: 90})
+        .toFile(`public/img/tours/tour-${req.params.id}-cover.jpeg`);
+
+    };
+    if(req.files.images){
+       await Promise.all(req.files.images.map(async(el,i)=>{
+            
+           await sharp(el.buffer)
+            .resize(2000,1333)
+            .toFormat('jpeg')
+            .jpeg({quality: 90})
+            .toFile(`public/img/tours/tour-${req.params.id}-${i+1}.jpeg`);
+
+            req.body.images.push(`tour-${req.params.id}-${i+1}.jpeg`)
+        }))
+    };
+  
+    next();
+});
 
 exports.getAllTours = factory.getAll(Tour);
 exports.getTour = factory.getOne(Tour,{path: 'reviews'})

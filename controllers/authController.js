@@ -34,21 +34,21 @@ exports.protect = catchAsync(async(req,res,next)=>{
   //check if token exist
   let token;
 
+  //check cookies with cookie parser.
+  if(!token){
+    if(req.cookies && req.cookies.jwt){
+      token = req.cookies.jwt;
+    }
+  }
+
   //////BEARER TOKEN AUTHORIZATIOON LOGIC
-  if(req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
+  if(!token && req.headers.authorization && req.headers.authorization.startsWith('Bearer')){
     token = req.headers.authorization.split(' ')[1];
   }
   if(!token){
     //////// cookie AUTHORIZATION LOGIC
     if(req.headers.cookie && req.headers.cookie.startsWith('jwt')){
       token = req.headers.cookie.split('=')[1];
-    }
-  }
-
-  //check cookies with cookie parser.
-  if(!token){
-    if(req.cookies && req.cookies.jwt){
-      token = req.cookies.jwt;
     }
   }
 
