@@ -90,6 +90,8 @@ app.use(hpp({
     ]
 }));
 
+app.enable('trust proxy');
+
 // rendering basee template in root route.
 app.use('/', viewRouter);
 //specific middleware
