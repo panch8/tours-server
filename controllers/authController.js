@@ -13,7 +13,7 @@ const Email = require('../utils/email');
 
 const signToken = id => jwt.sign({id}, process.env.JWT_SECRET, {expiresIn: process.env.JWT_EXPIRES});
 
-const createSendToken = (user, statusCode, res) =>{
+const createSendToken = (user, statusCode, req,res) =>{
   const token = signToken(user._id);
   const cookieOpt = {
     expires: new Date(Date.now()+process.env.JWT_COOKIE_EXPIRES*24*60*60*1000), 
@@ -139,7 +139,7 @@ exports.signUp = catchAsync(async (req,res,next)=>{
 
     await new Email(newUser,url).sendWelcome();
 
-    createSendToken(newUser,201,res);
+    createSendToken(newUser,201,req, res);
      
 });
 
@@ -158,7 +158,7 @@ exports.logIn = catchAsync(async (req,res,next)=>{
   if(!user || !(await user.correctPassword(password, user.password))){
       return next(new AppError('The provided credentials are not correct, try again', 401))
   }else{
-    createSendToken(user,200,res);  
+    createSendToken(user,200,req,res);  
   }
 });
 
@@ -243,7 +243,7 @@ const currentUser = await User.findOne({
 
   await currentUser.save();
 
-  createSendToken(currentUser,200,res);
+  createSendToken(currentUser,200,req, res);
 
 });
 
@@ -265,6 +265,6 @@ exports.updatePassword = catchAsync(async(req,res,next)=>{
 
   await currentUser.save();
   //login user with new JWT
-  createSendToken(currentUser,200,res);
+  createSendToken(currentUser,200,req,res);
   
 });
