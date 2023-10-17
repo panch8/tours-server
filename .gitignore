@@ -1,5 +1,5 @@
-config.env
+*.env
 node_modules
-.cache
+.cache/
 public/js/bundle.js
 public/js/bundle.js.map
