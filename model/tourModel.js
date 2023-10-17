@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 require('dotenv').config({path:`${__dirname}/../config.env`});
 const slugify = require('slugify');
 
-const DB = process.env.DB_HOST.replace('<password>',process.env.DB_PASSWORD);
+const DB_HOST = 'mongodb+srv://admin-fran:<password>@cluster0.gszmjqk.mongodb.net/?retryWrites=true&w=majority';
+const DB = DB_HOST.replace('<password>',process.env.DB_PASSWORD);
 
 mongoose.connect(DB).then(()=>{
     console.log('DB connected succesfully');
