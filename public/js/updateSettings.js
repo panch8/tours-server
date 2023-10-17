@@ -7,8 +7,8 @@ export const updateSettings = async function(data,field){
     //data obj could be either {name:'example', email:'example} or 
     // { currentPassword:'xxxxxxxx', password: 'xxxxxxxxxx', passwordConfirm: 'xxxxxxxxx'}
     const url = field === 'password'? 
-    'http://127.0.0.1:3000/api/v1/users/update-password':
-    'http://127.0.0.1:3000/api/v1/users/updateMe';
+    '/api/v1/users/update-password':
+    '/api/v1/users/updateMe';
     
     const res = await axios({
     method: "PATCH",
@@ -21,7 +21,7 @@ export const updateSettings = async function(data,field){
   }
 
 }catch(err){
-  console.log(err);
+  // console.log(err);
   showAlert('error',err.response.data.message)
 }
 

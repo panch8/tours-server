@@ -4,7 +4,6 @@ import { displayMap } from './mapbox';
 import { updateSettings } from './updateSettings';
 import { checkout } from './bookings';
 
-console.log('hello from parcel');
 
 const mapDiv = document.getElementById('map');
 const loginForm = document.querySelector('.form--login');
@@ -34,7 +33,7 @@ if(updateDataForm){
   updateDataForm.addEventListener('submit',async function(e){
     e.preventDefault();
     const form = new FormData;
-    console.log(document.getElementById('upload-photo').files);
+ 
     form.append('name',document.getElementById('name').value);
     form.append('email',document.getElementById('email').value);
     form.append('photo',document.getElementById('upload-photo').files[0]);
@@ -83,7 +82,7 @@ if(checkoutBtn){
   checkoutBtn.addEventListener('click',async function(e){
   checkoutBtn.textContent = 'Processing...'
   const { tourid } = e.target.dataset;
-  console.log(tourid);
+
   await checkout(tourid);
   
   })

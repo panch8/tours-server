@@ -14,6 +14,7 @@ const hpp = require('hpp');
 const path = require('path');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
+const compression = require('compression');
 
 const app = express();
 
@@ -64,6 +65,8 @@ app.use(express.urlencoded({
     extended: true
 }));
 app.use(cookieParser());
+// prduction middleware for optimization. 
+app.use(compression());
 
 //test middleware
 app.use((req,res,next)=>{

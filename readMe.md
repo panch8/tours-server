@@ -41,10 +41,12 @@ API:
   - CRUD on BOOKINGS (restricted to specific roles)
   - Bookings checkout session on stripe.
   - Environment driven error handling.
+  - Update tours photos. (multi-file upload).
   
   
 Browser/ client:
   - Log in / Sign up
   - Server-side rendering with pug.
   - Overview, single tour, account page, and reset password page.
+  - Upload user photo.
   - Welcome email, reset password flow email.

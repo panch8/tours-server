@@ -6,7 +6,7 @@ export const login = async function(email,password){
  try {
    const res = await  axios({
      method: 'POST',
-     url:'http://127.0.0.1:3000/api/v1/users/login',
+     url:'/api/v1/users/login',
      data:{
        email,
        password
@@ -23,7 +23,7 @@ export const login = async function(email,password){
 
  } catch (error) {
   showAlert('error',error.response.data.message)
-  console.log(error.response.data);
+  // console.log(error.response.data);
  }
 };
 
@@ -31,7 +31,7 @@ export const logOut = async function(){
   try {
     const res =await axios({
       method:'GET',
-      url:'http://127.0.0.1:3000/api/v1/users/logout'
+      url:'/api/v1/users/logout'
     })
 
     if(res.data.status === 'success')location.assign('/');
@@ -47,7 +47,7 @@ export const submitNewPass = async function(token,password,passwordConfirm){
 
     const res =await axios({
       method:'PATCH',
-      url:`http://127.0.0.1:3000/api/v1/users/reset-password/${token}`,
+      url:`/api/v1/users/reset-password/${token}`,
       data:{
         password,
         passwordConfirm
