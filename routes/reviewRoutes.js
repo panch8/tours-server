@@ -1,8 +1,8 @@
 const express = require('express');
 const router = express.Router({ mergeParams: true});
-
-const reviewController = require('../controllers/reviewController');
 const authController = require('../controllers/authController');
+const reviewController = require('../controllers/reviewController');
+
 
 //every review route is protected but some of them are restricted.
 router.use(authController.protect);

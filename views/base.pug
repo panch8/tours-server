@@ -8,8 +8,9 @@ html
       link(
         href="https://fonts.googleapis.com/css?family=Lato:300,300i,700"
         rel="stylesheet")
-      title Tours YAY | #{title}
       link(rel='shortcut icon' type='image/png' href='/img/favicon.png')
+      
+      title Tours YAY | #{title}
 
   body 
     include _header
@@ -22,4 +23,5 @@ html
     // FOOTER
     include _footer
 
+    script(src="https://js.stripe.com/v3/")
     script(src="/js/bundle.js") 

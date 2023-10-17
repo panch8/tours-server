@@ -1,5 +1,6 @@
 const Tour = require('../model/tourModel');
 const User = require('../model/userModel');
+const Booking = require('../model/bookingModel');
 
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
@@ -50,6 +51,30 @@ exports.getAccount = catchAsync( async(req,res,next)=>{
     user
   })
 });
+
+exports.getMyTours = catchAsync(async(req,res,next)=>{
+  //addd API FEATURES> 
+
+  const bookings = await Booking.find({user:req.user.id});
+  
+  
+  // VARIANT A:
+  const tours = await Promise.all(bookings.map(async el=>{
+    return await Tour.findById(el.tour)
+  }))
+
+  //VARIANT B:
+  //atentions this variant does not display duplicated bookings. 
+
+  // const toursIds = bookings.map(el => el.tour);
+  // const tours = await Tour.find({_id:{$in: toursIds}})
+
+  res.status(200).render('overview',{
+    title: 'My booked tours',
+    tours
+  })
+});
+
 
 exports.getSubmitNewPassForm = (req,res,next)=>{
   const token = req.params.resetToken

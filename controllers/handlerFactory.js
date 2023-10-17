@@ -40,7 +40,7 @@ exports.createOne = Model => catchAsync(async (req,res, next)=>{
     const doc = await Model.create(req.body);
 
     if(!doc){
-        return next(new AppError('No document found with that id', 404));
+        return next(new AppError('No document created, try again', 400));
     }
 
     res.status(201).json({
@@ -60,7 +60,7 @@ exports.getOne = (Model, popOptions) => catchAsync(async (req, res, next)=>{
     //guard claus
    if(!doc){
        //calling next ( with error as argument)
-       return next(new AppError("No doc found for tha id", 404));
+       return next(new AppError("No document found for that id", 404));
    }
    
     res.status(200).json({

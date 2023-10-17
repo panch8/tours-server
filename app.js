@@ -2,6 +2,7 @@ const express = require('express');
 const toursRouter = require('./routes/tourRoutes');
 const usersRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
+const bookingRouter = require('./routes/bookingRoutes');
 const viewRouter = require('./routes/viewRoutes');
 const gobalErrorHandler = require('./controllers/errorController');
 const AppError = require('./utils/appError');
@@ -91,6 +92,7 @@ app.use('/', viewRouter);
 //specific middleware
 app.use('/api/v1/tours/', toursRouter);
 app.use('/api/v1/users/', usersRouter);
+app.use('/api/v1/bookings/', bookingRouter);
 app.use('/api/v1/reviews/', reviewRouter);
 
 app.all('*',(req,res,next)=>{

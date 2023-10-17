@@ -2,6 +2,8 @@ import '@babel/polyfill';
 import { logOut, login, submitNewPass } from "./login";
 import { displayMap } from './mapbox';
 import { updateSettings } from './updateSettings';
+import { checkout } from './bookings';
+
 console.log('hello from parcel');
 
 const mapDiv = document.getElementById('map');
@@ -9,7 +11,8 @@ const loginForm = document.querySelector('.form--login');
 const logOutBtn = document.querySelector('.nav__el--logout');
 const updateDataForm = document.querySelector('.form-user-data');
 const updatePasswordForm = document.querySelector('.form-user-settings');
-const submitNewPassForm = document.querySelector('.form--submit-pass')
+const submitNewPassForm = document.querySelector('.form--submit-pass');
+const checkoutBtn = document.getElementById('book-tour');
 
 if(mapDiv){
   const locations = JSON.parse(mapDiv.dataset.locations)
@@ -73,5 +76,15 @@ if(submitNewPassForm){
     const token = document.getElementById('password').dataset.token;
     const confirmPassword = document.getElementById('password-confirm').value;
     await submitNewPass(token,password,confirmPassword)
+  })
+}
+
+if(checkoutBtn){
+  checkoutBtn.addEventListener('click',async function(e){
+  checkoutBtn.textContent = 'Processing...'
+  const { tourid } = e.target.dataset;
+  console.log(tourid);
+  await checkout(tourid);
+  
   })
 }
