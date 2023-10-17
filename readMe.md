@@ -24,6 +24,27 @@ A Nodejs server. Modern style.
   - [Nodemailer](https://nodemailer.com/) module to handle application email messages.
   - [SendGrid](https://sendgrid.com/) for mail delivery.
 
+Data model using references.
 
 ### Features: 
 
+API and Website. 
+
+API:
+  - CRUD on tours.
+  - aggregation pipelines on tours - get statistics - set monthly plan
+  - CRUD on USER (as admin)
+  - update logged user & delete logged user
+  - CRUD on reviews (only logged users)
+  - Authentication : Sign-up & login | Forgot Pass | Reset Pass | Update Pass
+  - Nested routes: reviews on tour/ create review on tour.
+  - CRUD on BOOKINGS (restricted to specific roles)
+  - Bookings checkout session on stripe.
+  - Environment driven error handling.
+  
+  
+Browser/ client:
+  - Log in / Sign up
+  - Server-side rendering with pug.
+  - Overview, single tour, account page, and reset password page.
+  - Welcome email, reset password flow email.
