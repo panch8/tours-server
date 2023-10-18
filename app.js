@@ -60,9 +60,16 @@ const limiter = rateLimit({
 
 //rate limiter
 app.use('/api',limiter);
-// req data limit
-app.post('/webhook-checkout',express.raw({type: 'application/json'}), bookingController.webhookCheckout)
 
+//implementing CORS for all routes
+app.use(cors());
+
+// CORS for special requests. 
+app.options('*',cors());
+
+
+app.post('/webhook-checkout',express.raw({type: 'application/json'}), bookingController.webhookCheckout)
+// req data limit
 app.use(express.json({limit: '10kb'}));
 app.use(express.urlencoded({
     limit:'10kb',
@@ -96,11 +103,6 @@ app.use(hpp({
 
 app.enable('trust proxy');
 
-//implementing CORS for all routes
-app.use(cors());
-
-// CORS for special requests. 
-app.options('*',cors());
 
 // rendering basee template in root route.
 app.use('/', viewRouter);
