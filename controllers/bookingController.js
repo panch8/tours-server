@@ -87,6 +87,7 @@ module.exports.webhookCheckout = catchAsync(async(req,res,next)=>{
   if(event.type === 'checkout.session.completed'){
 
     await createBookingCheckout(event.data.object);
+    res.locals.alert = 'purchase-success'
   }
 
   res.status(200).json({

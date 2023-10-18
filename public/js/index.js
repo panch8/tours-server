@@ -3,6 +3,7 @@ import { logOut, login, submitNewPass } from "./login";
 import { displayMap } from './mapbox';
 import { updateSettings } from './updateSettings';
 import { checkout } from './bookings';
+import { showAlert } from './alerts';
 
 
 const mapDiv = document.getElementById('map');
@@ -86,4 +87,8 @@ if(checkoutBtn){
   await checkout(tourid);
   
   })
+}
+
+if(document.body.dataset.alert === 'purchase-success'){
+  showAlert('success','Your tour has been successfully purchased, check your email for details. If the tour does not appear in this page please reload it after a couple of seconds.')
 }

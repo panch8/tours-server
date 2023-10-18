@@ -12,7 +12,7 @@ html
       
       title Tours YAY | #{title}
 
-  body 
+  body(data-alert=`${alert ? alert : ''}`) 
     include _header
     
     // CONTENT
