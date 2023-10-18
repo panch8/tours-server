@@ -5,7 +5,13 @@ const Booking = require('../model/bookingModel');
 const AppError = require('../utils/appError');
 const catchAsync = require('../utils/catchAsync');
 
-
+exports.alerts =  (req,res,next)=>{
+  const { alert } = req.query;
+  if(alert){
+    res.locals.alert = alert;
+  }
+  next();
+}
 
 exports.getOverview =catchAsync(async(req,res,next)=>{
   // get all tourStats

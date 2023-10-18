@@ -12,7 +12,7 @@ module.exports.getCheckoutSession = catchAsync(async(req,res,next)=>{
   if(!tour) return next(new AppError('No tour with tha id', 404));
   try {
     const session = await stripe.checkout.sessions.create({
-      success_url: `${req.protocol}://${req.get('host')}/my-tours`,
+      success_url: `${req.protocol}://${req.get('host')}/my-tours?alert=purchase-success`,
       cancel_url: `${req.protocol}://${req.get('host')}/tour/${tour.slug}`,
       line_items: [
         {
@@ -87,7 +87,7 @@ module.exports.webhookCheckout = catchAsync(async(req,res,next)=>{
   if(event.type === 'checkout.session.completed'){
 
     await createBookingCheckout(event.data.object);
-    res.locals.alert = 'purchase-success'
+
   }
 
   res.status(200).json({
