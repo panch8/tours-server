@@ -15,6 +15,7 @@ const path = require('path');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
+const cors = require('cors');
 
 const app = express();
 
@@ -59,6 +60,8 @@ const limiter = rateLimit({
 //rate limiter
 app.use('/api',limiter);
 // req data limit
+app.post('/webhook-checkout',express.raw({type: 'application/json'}), bookingController.webhookCheckout)
+
 app.use(express.json({limit: '10kb'}));
 app.use(express.urlencoded({
     limit:'10kb',
@@ -91,6 +94,12 @@ app.use(hpp({
 }));
 
 app.enable('trust proxy');
+
+//implementing CORS for all routes
+app.use(cors());
+
+// CORS for special requests. 
+app.options('*',cors());
 
 // rendering basee template in root route.
 app.use('/', viewRouter);
