@@ -9,6 +9,8 @@ Clone the main branch repo and run:
   - `npm run watch:js` to run parcel bundler for a dev bundle or `npm run build:js` for a production compressed bundle.
 
 localhost is going  to be at: [Local-Host:](http://127.0.0.1:3000/) 'http://127.0.0.1:3000/'
+
+Live version at: [https://fran-tours-54d8a602e684.herokuapp.com/](https://fran-tours-54d8a602e684.herokuapp.com/)
  
 ## Tours server. Implementing MVC architechture and server-side rendering
 
