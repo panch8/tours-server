@@ -92,7 +92,7 @@ module.exports.webhookCheckout = catchAsync(async(req,res,next)=>{
   res.status(200).json({
     status: 'received'
   })
-  next();
+  // next();
 });
 
 module.exports.getAllBookings = factory.getAll(Booking);
