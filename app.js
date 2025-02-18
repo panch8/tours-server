@@ -32,47 +32,47 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(helmet());
 app.use(
     helmet.contentSecurityPolicy({
-    directives: {
-    defaultSrc: ["'self'", 'https:', 'http:','data:', 'ws:'],
-    baseUri: ["'self'"],
-    fontSrc: ["'self'", 'https:','http:', 'data:'],
-    scriptSrc: [
-    "'self'",
-    'https:',
-    'http:',
-    'blob:'],
-    styleSrc: ["'self'", 'https:', 'http:','unsafe-inline']
-    }
+        directives: {
+            defaultSrc: ["'self'", 'https:', 'http:', 'data:', 'ws:'],
+            baseUri: ["'self'"],
+            fontSrc: ["'self'", 'https:', 'http:', 'data:'],
+            scriptSrc: [
+                "'self'",
+                'https:',
+                'http:',
+                'blob:'],
+            styleSrc: ["'self'", 'https:', 'http:', 'unsafe-inline']
+        }
     })
-   );
+);
 
-if(process.env.NODE_ENV === 'development'){
+if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
 
 
 const limiter = rateLimit({
-    max:100,
-    windowMs: 60*60*1000,
+    max: 100,
+    windowMs: 60 * 60 * 1000,
     message: "Too many requests from this IP, Try again later"
 })
 //global middleware
 
 //rate limiter
-app.use('/api',limiter);
+app.use('/api', limiter);
 
 //implementing CORS for all routes
 app.use(cors());
 
 // CORS for special requests. 
-app.options('*',cors());
+app.options('*', cors());
 
 
-app.post('/webhook-checkout',express.raw({type: 'application/json'}), bookingController.webhookCheckout)
+app.post('/webhook-checkout', express.raw({ type: 'application/json' }), bookingController.webhookCheckout)
 // req data limit
-app.use(express.json({limit: '10kb'}));
+app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({
-    limit:'10kb',
+    limit: '10kb',
     extended: true
 }));
 app.use(cookieParser());
@@ -80,7 +80,7 @@ app.use(cookieParser());
 app.use(compression());
 
 //test middleware
-app.use((req,res,next)=>{
+app.use((req, res, next) => {
     req.time = new Date().toISOString();
     next();
 });
@@ -91,7 +91,7 @@ app.use(xss());
 
 // parameter pollution prevention with hpp..  except the ones in the whitelist the requests wont admit duplicated fields. 
 app.use(hpp({
-    whitelist:[
+    whitelist: [
         'duration',
         'ratingsQuantity',
         'ratingsAverage',
@@ -112,7 +112,7 @@ app.use('/api/v1/users/', usersRouter);
 app.use('/api/v1/bookings/', bookingRouter);
 app.use('/api/v1/reviews/', reviewRouter);
 
-app.all('*',(req,res,next)=>{
+app.all('*', (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} in this server`, 404))
 })
 ///global Error handler middleware
